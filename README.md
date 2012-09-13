@@ -3,6 +3,14 @@ Description
 
 Installs the MXUnit framework for ColdFusion.
 
+Requirements
+============
+
+Cookbooks
+---------
+
+coldfusion902
+
 Attributes
 ==========
 
