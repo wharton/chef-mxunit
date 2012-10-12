@@ -23,9 +23,11 @@ package "unzip" do
   action :install
 end
 
+file_name = node['mxunit']['download']['url'].split('/').last
+
 # Download MXUnit
 
-remote_file "#{Chef::Config['file_cache_path']}/mxunit-2.1.1.zip" do
+remote_file "#{Chef::Config['file_cache_path']}/#{file_name}" do
   source "#{node['mxunit']['download']['url']}"
   action :create_if_missing
   mode "0744"
@@ -41,7 +43,7 @@ script "install_mxunit" do
   user "root"
   cwd "#{Chef::Config['file_cache_path']}"
   code <<-EOH
-unzip mxunit-2.1.1.zip 
+unzip #{file_name} 
 mv mxunit #{node['mxunit']['install_path']}
 chown -R nobody:bin #{node['mxunit']['install_path']}/mxunit
 EOH
@@ -55,7 +57,7 @@ execute "start_cf_for_mxunit_default_cf_config" do
   notifies :start, "service[coldfusion]", :immediately
 end
 
-coldfusion902_config "extensions" do
+coldfusion10_config "extensions" do
   action :set
   property "mapping"
   args ({ "mapName" => "/mxunit",
