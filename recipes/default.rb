@@ -36,6 +36,16 @@ remote_file "#{Chef::Config['file_cache_path']}/#{file_name}" do
   not_if { File.directory?("#{node['mxunit']['install_path']}/mxunit") }
 end
 
+# Create the target install directory if it doesn't exist
+
+directory "#{node['mxunit']['install_path']}" do
+  owner "vagrant"
+  group "vagrant"
+  mode "0755"
+  action :create
+  not_if { File.directory?("#{node['mxunit']['install_path']}") }
+end
+
 # Extract archive
 
 script "install_mxunit" do
