@@ -39,8 +39,8 @@ end
 # Create the target install directory if it doesn't exist
 
 directory "#{node['mxunit']['install_path']}" do
-  owner "vagrant"
-  group "vagrant"
+  owner node['cf10']['installer']['runtimeuser']
+  group node['cf10']['installer']['runtimeuser']
   mode "0755"
   action :create
   not_if { File.directory?("#{node['mxunit']['install_path']}") }
@@ -55,7 +55,7 @@ script "install_mxunit" do
   code <<-EOH
 unzip #{file_name} 
 mv mxunit #{node['mxunit']['install_path']}
-chown -R nobody:bin #{node['mxunit']['install_path']}/mxunit
+chown -R #{node['cf10']['installer']['runtimeuser']}:bin #{node['mxunit']['install_path']}/mxunit
 EOH
   not_if { File.directory?("#{node['mxunit']['install_path']}/mxunit") }
 end
