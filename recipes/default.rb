@@ -25,6 +25,8 @@ end
 
 file_name = node['mxunit']['download']['url'].split('/').last
 
+node.set['mxunit']['owner'] = node['cf10']['installer']['runtimeuser'] if node['mxunit']['owner'] == nil
+
 # Download MXUnit
 
 remote_file "#{Chef::Config['file_cache_path']}/#{file_name}" do
@@ -39,9 +41,10 @@ end
 # Create the target install directory if it doesn't exist
 
 directory "#{node['mxunit']['install_path']}" do
-  owner "vagrant"
-  group "vagrant"
+  owner node['mxunit']['owner']
+  group node['mxunit']['group']
   mode "0755"
+  recursive true
   action :create
   not_if { File.directory?("#{node['mxunit']['install_path']}") }
 end
@@ -55,7 +58,7 @@ script "install_mxunit" do
   code <<-EOH
 unzip #{file_name} 
 mv mxunit #{node['mxunit']['install_path']}
-chown -R nobody:bin #{node['mxunit']['install_path']}/mxunit
+chown -R #{node['mxunit']['owner']}:#{node['mxunit']['group']} #{node['mxunit']['install_path']}/mxunit
 EOH
   not_if { File.directory?("#{node['mxunit']['install_path']}/mxunit") }
 end
