@@ -25,7 +25,7 @@ end
 
 file_name = node['mxunit']['download']['url'].split('/').last
 
-node.set['mxunit']['owner'] = node['cf10']['installer']['runtimeuser'] if node['mxunit']['owner'] == nil
+node.set['mxunit']['owner'] = "nobody" if node['mxunit']['owner'] == nil
 
 # Download MXUnit
 
