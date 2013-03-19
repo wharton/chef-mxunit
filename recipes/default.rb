@@ -77,4 +77,18 @@ coldfusion902_config "extensions" do
           "mapPath" => "#{node['mxunit']['install_path']}/mxunit"})
 end
 
+# Create a global apache alias if desired
+template "#{node['apache']['dir']}/conf.d/global-mxunit-alias" do
+  source "global-mxunit-alias.erb"
+  owner node['apache']['user']
+  group node['apache']['group']
+  mode "0755"
+  variables(
+    :url_path => '/mxunit',
+    :file_path => "#{node['mxunit']['install_path']}/mxunit"
+  )
+  only_if { node['mxunit']['create_apache_alias'] }
+  notifies :restart, "service[apache2]"
+end
+
 
