@@ -78,8 +78,8 @@ coldfusion902_config "extensions" do
 end
 
 # Create a global apache alias if desired
-template "#{node['apache']['dir']}/conf.d/global-mxunit-alias" do
-  source "global-mxunit-alias.erb"
+template "#{node['apache']['dir']}/conf.d/global_mxunit_alias.conf" do
+  source "global_mxunit_alias.conf.erb"
   owner node['apache']['user']
   group node['apache']['group']
   mode "0755"
@@ -90,5 +90,12 @@ template "#{node['apache']['dir']}/conf.d/global-mxunit-alias" do
   only_if { node['mxunit']['create_apache_alias'] }
   notifies :restart, "service[apache2]"
 end
+
+# Clean up old conf file
+file "#{node['apache']['dir']}/conf.d/global-mxunit-alias" do
+  action :delete
+  notifies :restart, "service[apache2]"
+end
+
 
 
